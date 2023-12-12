@@ -1,0 +1,14 @@
+main {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 50px;
+}
+
+.menu {
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    right: 0;
+    background-color: rgb(43, 226, 150);
+}
