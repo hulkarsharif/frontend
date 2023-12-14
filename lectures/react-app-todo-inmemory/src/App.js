@@ -8,13 +8,16 @@ class App extends React.Component {
         this.state = {
             todos: [],
             inputValue: "",
-            inputError: false
+            inputError: false,
+            showEditModal: false,
+            inputEditValue: "",
+            editingTodoId: ""
         };
     }
 
     addTodo = (e) => {
         e.preventDefault();
-        if (this.setState.inputValue.length <= 1) {
+        if (this.state.inputValue.length <= 1) {
             this.setState({
                 inputError: false
             });
@@ -49,17 +52,6 @@ class App extends React.Component {
         });
     };
 
-    deleteTodo = (todoId) => {
-        this.setState((prevState) => {
-            const keptTodos = prevState.todos.filter(
-                (todo) => todo.id !== todoId
-            );
-            return {
-                todos: keptTodos
-            };
-        });
-    };
-
     handleOnChange = (e) => {
         const { value } = e.target;
         this.setState({
@@ -74,6 +66,54 @@ class App extends React.Component {
                 inputError: false
             });
         }
+    };
+    deleteTodo = (todoId) => {
+        this.setState((prevState) => {
+            const keptTodos = prevState.todos.filter(
+                (todo) => todo.id !== todoId
+            );
+            return {
+                todos: keptTodos
+            };
+        });
+    };
+    editTodo = (todoId) => {
+        this.setState({
+            showEditModal: true
+        });
+        let todoText = "";
+        for (const todo of this.state.todos) {
+            if (todo.id === todoId) {
+                todoText = todo.text;
+                break;
+            }
+        }
+        this.setState({
+            inputEditValue: todoText,
+            editingTodoId: todoId
+        });
+    };
+
+    handleInputEdit = (e) => {
+        this.setState({
+            inputEditValue: e.target.value
+        });
+    };
+
+    submitEdit = () => {
+        this.setState((prevState) => {
+            const updatedTodos = prevState.todos.map((todo) => {
+                if (todo.id === this.state.editingTodoId) {
+                    const copy = { ...todo, text: this.state.inputEditValue };
+                    return copy;
+                }
+                return todo;
+            });
+            return {
+                todos: updatedTodos,
+                showEditModal: false
+            };
+        });
     };
 
     render() {
@@ -115,16 +155,28 @@ class App extends React.Component {
                                         }}
                                     />
                                     <button
-                                        className="icon "
                                         onClick={() => this.deleteTodo(todo.id)}
-                                        title="delete"
                                     >
-                                        Delete
+                                        X
+                                    </button>
+                                    <button
+                                        onClick={() => this.editTodo(todo.id)}
+                                    >
+                                        Edit
                                     </button>
                                 </li>
                             );
                         })}
                 </ul>
+                {this.state.showEditModal && (
+                    <div className="modal">
+                        <input
+                            value={this.state.inputEditValue}
+                            onChange={this.handleInputEdit}
+                        />
+                        <button onClick={this.submitEdit}>Update Todo</button>
+                    </div>
+                )}
             </main>
         );
     }
