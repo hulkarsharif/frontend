@@ -7,13 +7,19 @@ class App extends React.Component {
         super();
         this.state = {
             todos: [],
-            inputValue: ""
+            inputValue: "",
+            inputError: false
         };
     }
 
     addTodo = (e) => {
         e.preventDefault();
-        console.log(this.state.inputValue);
+        if (this.setState.inputValue.length <= 1) {
+            this.setState({
+                inputError: false
+            });
+            return;
+        }
         const newTodo = {
             id: uuid(),
             text: this.state.inputValue,
@@ -28,18 +34,6 @@ class App extends React.Component {
             };
         });
     };
-
-    deleteTodo = (todoId) => {
-        this.setState((prevState) => {
-            const updatedTodos = prevState.todos.filter(
-                (todo) => todo.id !== todoId
-            );
-            return {
-                todos: updatedTodos
-            };
-        });
-    };
-
     updateTodo = (isDone, todoId) => {
         this.setState((prevState) => {
             const updatedTodos = prevState.todos.map((todo) => {
@@ -55,23 +49,47 @@ class App extends React.Component {
         });
     };
 
+    deleteTodo = (todoId) => {
+        this.setState((prevState) => {
+            const keptTodos = prevState.todos.filter(
+                (todo) => todo.id !== todoId
+            );
+            return {
+                todos: keptTodos
+            };
+        });
+    };
+
     handleOnChange = (e) => {
         const { value } = e.target;
         this.setState({
             inputValue: value
         });
+        if (value.length <= 1) {
+            this.setState({
+                inputError: true
+            });
+        } else {
+            this.setState({
+                inputError: false
+            });
+        }
     };
 
     render() {
         return (
             <main>
                 <form onSubmit={this.addTodo}>
-                    <input
-                        onChange={this.handleOnChange}
-                        value={this.state.inputValue}
-                        type="text"
-                        placeholder="What is on your mind"
-                    />
+                    <div className="form-control">
+                        <input
+                            onChange={this.handleOnChange}
+                            value={this.state.inputValue}
+                            type="text"
+                            placeholder="What is on your mind"
+                        />
+                        {this.state.inputError && <span>Invalid Todo</span>}
+                    </div>
+
                     <input type="submit" value="Add Todo" />
                 </form>
                 <ul>
@@ -85,6 +103,7 @@ class App extends React.Component {
                                     }`}
                                 >
                                     <span>{todo.text}</span>
+
                                     <input
                                         type="checkbox"
                                         defaultChecked={todo.isDone}

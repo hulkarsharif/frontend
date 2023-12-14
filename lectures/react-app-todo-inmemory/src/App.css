@@ -16,3 +16,16 @@ input {
 .todo--done {
     text-decoration: line-through;
 }
+
+.form-control input,
+.form-control span {
+    display: block;
+}
+.form-control span {
+    color: red;
+}
+
+form {
+    display: flex;
+    gap: 20px;
+}
