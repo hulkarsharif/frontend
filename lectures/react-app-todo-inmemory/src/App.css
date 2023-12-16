@@ -30,18 +30,6 @@ form {
     gap: 20px;
 }
 
-.modal {
-    height: 300px;
-    width: 300px;
-    background-color: orange;
-    z-index: 2;
-
-    position: fixed;
-    top: 50%;
-    right: 50%;
-    transform: translate(-50% -50);
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.edit-form {
+    padding: 40px;
 }
